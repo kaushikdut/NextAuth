@@ -1,4 +1,4 @@
-import { db } from "@/libs/db";
+import { db } from "@/lib/db";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -25,26 +25,25 @@ const handler = NextAuth({
       },
 
       async authorize(credentials, req) {
-        console.log("trigger");
-        // if (credentials) {
-        //   const { email, password } = credentials;
+        if (credentials) {
+          const { email, password } = credentials;
 
-        //   if (!email || !password) {
-        //     return null;
-        //   }
-        //   console.log(email, password);
+          if (!email || !password) {
+            return null;
+          }
 
-        //   const user = await db.user.findUnique({
-        //     where: {
-        //       email,
-        //     },
-        //   });
+          const user = await db.user.findUnique({
+            where: {
+              email,
+            },
+          });
 
-        //   if (user?.password !== password) {
-        //     return null;
-        //   }
-        //   return user || null;
-        // }
+          if (user) {
+            return { ...user, id: user.id.toString() };
+          }
+
+          return null;
+        }
         return null;
       },
     }),
